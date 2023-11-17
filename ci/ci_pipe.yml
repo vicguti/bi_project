@@ -42,5 +42,12 @@ stages:
 ######################
 
     - script: |
-        pip install -r ../requirements.txt
-      displayName: install requiremetns
+        pip install -r requirements.txt
+      displayName: install dependencies
+
+    - scripts: |
+        pytest walmart_sale_prediction.py
+      displayName: running unit tests
+    
+    - scripts: |
+        ruff check 

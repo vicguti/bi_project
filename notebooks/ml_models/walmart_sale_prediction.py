@@ -3,14 +3,11 @@ warnings.filterwarnings("ignore")
 
 import numpy as np
 import pandas as pd
-import scipy.stats as stats
 import matplotlib.pyplot as plt
-import sklearn
 import seaborn as sns
 sns.set_style("whitegrid")
-from sklearn import datasets, linear_model
-from sklearn.cross_validation import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn import linear_model
+from sklearn.model_selection import train_test_split
 
 train=pd.read_csv('....../Walmart/train.csv')
 test=pd.read_csv('......./Walmart/test.csv')
@@ -192,4 +189,5 @@ wmLinear
 
 lasso = Lasso(alpha=17)
 lasso.fit(XTrain, YTrain)
+
 
