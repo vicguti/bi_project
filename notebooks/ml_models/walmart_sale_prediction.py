@@ -192,7 +192,6 @@ alphas = np.linspace(10, 20, 10)
 testError = np.empty(10)
 
 for i, alpha in enumerate(alphas):
-
     lasso = Lasso(alpha=alpha)
     lasso.fit(XTrain, YTrain)
     testError[i] = mean_squared_error(YTest, lasso.predict(XTest))

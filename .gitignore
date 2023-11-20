@@ -1,0 +1,25 @@
+build/
+venv/
+.venv/
+__pycache__/
+.eggs/
+dist/
+junit/
+.mypy_cache/
+.pytest_cache/
+#.python-version
+
+# Sphinx
+docs/_build/
+docs/modules/
+
+# vscode
+.vscode/
+.vscode
+
+# Databricks for vscode extension
+.databricks
+typings/__builtins__.pyi
+
+# todo-ignore
+TODO.ignore.md
