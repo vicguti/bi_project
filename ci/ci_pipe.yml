@@ -45,9 +45,35 @@ stages:
         pip install -r requirements.txt
       displayName: install dependencies
 
-    - scripts: |
-        pytest walmart_sale_prediction.py
+    - script: |
+        pytest tests/test_functions.py --junit-xml=junit/test-pytest.xml
       displayName: running unit tests
     
-    - scripts: |
-        ruff check 
+    - script: |
+        ruff check --output-format junit . > junit/test-ruff.xml
+      displayName: running ruff
+
+    - script: 
+        mypy . --junit-xml junit/test-mypy.xml
+      displayName: running mypy
+
+    - script:
+        black . --check
+      displayName: running black
+
+    - script:
+        isort . --check --verbose
+      displayName: running isort
+
+######################
+# Publishing results
+######################
+    
+    - task: PublishTestResults@1
+      displayName: CI pipe results
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/test-*.xml'
+        failTaskOnFailedTests: True
+

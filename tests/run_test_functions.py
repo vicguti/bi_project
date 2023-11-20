@@ -19,12 +19,10 @@
 # COMMAND ----------
 
 import os
-import pytest
 import sys
+from os.path import dirname, join, realpath
 
-
-
-from os.path import join, dirname, realpath
+import pytest
 
 # Get the repo's root directory name.
 repo_root = dirname(realpath(__name__))

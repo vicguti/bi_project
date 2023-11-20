@@ -2,10 +2,12 @@ import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
 
+
 @pytest.fixture(scope="module")
 def temp_directory(tmpdir_factory):
     dir = tmpdir_factory
     return dir
+
 
 @pytest.fixture(scope="module")
 def spark(temp_directory) -> SparkSession:
