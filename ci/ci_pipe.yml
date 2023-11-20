@@ -54,7 +54,7 @@ stages:
       displayName: running ruff
 
     - script: 
-        mypy . --junit-xml junit/test-mypy.xml || True
+        mypy . --junit-xml junit/test-mypy.xml || true
       displayName: running mypy
 
     - script:
