@@ -4,13 +4,6 @@
 # MAGIC #### Test notebooks/configuration/functons.py
 # MAGIC
 # MAGIC This notebook can be used to run unit tests within the Databricks workspace.
-# MAGIC
-# MAGIC
-# MAGIC This notebook is in progress. All our helpers are Databrick notebooks but the unit test are in python files and are using imports from those Databricks notebooks, this does not work (this only works in our local computer).
-# MAGIC
-# MAGIC - Next steps:
-# MAGIC   - Tranform our helpers into python files
-# MAGIC   - Check CD pipeline to do not transform Python files to Databricks notebooks automatically
 
 # COMMAND ----------
 

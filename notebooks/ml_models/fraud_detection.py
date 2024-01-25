@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 
 
 #Loading data for ML model
+#Dataset extracted from https://www.kaggle.com/datasets/uciml/breast-cancer-wisconsin-data
 df_breast_cancer = pd.read_csv("./data/ml_cases/breast_cancer.csv")
 
 df_breast_cancer_id_out = df_breast_cancer.drop(["id", "Unnamed: 32"], axis=1)
