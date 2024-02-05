@@ -1,0 +1,53 @@
+stages:
+  - stage: 'validatin_code'
+    displayName: 'Validating code'
+    jobs:
+      - job:
+        continueOnError: false
+        displayName: setting up image
+        pool: # Change pool for local dev
+          vmImage: ubuntu-latest
+
+
+        steps:
+        - script: env | sort
+          displayName: 'Environment / Context'
+            
+        - task: UsePythonVersion@0
+          displayName: Use Python 3.9
+          inputs:
+            versionSpec: '3.9'
+            architecture: 'x64'
+
+        - checkout: databricks_notebooks
+          displayName: 'Checkout & Build.Reason: $(Build.Reason) & Build.SourceBranchName: $(Build.SourceBranchName)'
+          clean: true
+          # persistCredentials: true
+
+    ######################
+    # Code validation and unit tests
+    ######################
+
+        - script: |
+            pip install -r requirements.txt
+          displayName: install dependencies
+
+        - script: |
+            pytest tests/test_functions.py --junit-xml=junit/test-pytest.xml
+          displayName: running unit tests
+        
+        - script: |
+            ruff check --output-format junit . > junit/test-ruff.xml
+          displayName: running ruff
+
+        - script: 
+            mypy . --junit-xml junit/test-mypy.xml || true
+          displayName: running mypy
+
+        - script:
+            black . --check
+          displayName: running black
+
+        - script:
+            isort . --check --verbose
+          displayName: running isort

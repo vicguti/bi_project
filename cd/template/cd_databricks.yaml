@@ -1,0 +1,89 @@
+stages:
+  - stage: 'deploy_${{parameters.env_name}}'
+    displayName: 'Deploying to ${{parameters.env_name}}'
+    jobs:
+      - deployment: '${{parameters.env_name}}'
+        environment: '${{parameters.env_name}}'
+        pool:
+          vmImage: ubuntu-latest
+        variables:
+          - group: '${{parameters.env_name}}-group'
+          # - name: 'repoPath'
+          #   value: '/Repos/${{parameters.release_path}}/${{parameters.repo_name}}'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                
+                - checkout: databricks_notebooks
+
+                # Updates databricks repo to a sepcific tag (if pipeline triggered by tag)
+                # Updates databricks repo to the latest commit on main (if triggered manually)
+                - bash: env | sort
+                  displayName: 'Environment / Context'
+
+                - task: AzureKeyVault@1
+                  displayName: 'Get Secrets [${{parameters.key_vault_name}}]'
+                  inputs:
+                    azureSubscription: '${{parameters.azure_subscription}}'
+                    keyVaultName: '${{parameters.key_vault_name}}'
+                    secretsFilter: '*'
+                
+                # Install Python -> requires github connection
+                - task: UsePythonVersion@0
+                  displayName: 'Use Python 3.8'
+                  inputs:
+                    disableDownloadFromRegistry: true
+                    versionSpec: 3.8
+
+                # Test arguments
+                - bash : |
+                    echo $(tag_value)
+                    echo $(tag_triggered)
+                    echo $BUILD_SOURCEBRANCH
+                  displayName: 'Check variables'
+                    
+                # Install databricks cli
+                - script: |
+                    python -m pip install --upgrade pip
+                    python -m pip install databricks-cli
+                  displayName: 'Install Databricks cli'
+                
+                # Check variables
+                - bash: |
+                    echo ${{parameters.env_name}}-group
+
+                    echo ${{ parameters.databricks_url }}
+ 
+                    echo $(databricks-01-token)
+
+                    echo $(databricks-${{ parameters.databricks_token_number }}-token)
+
+                    echo ${{ parameters.release_path }}
+                  displayName: 'Check variables'
+
+                # Check variables
+                - task: AzureCLI@2
+                  inputs:
+                    azureSubscription: '${{parameters.azure_subscription}}'
+                    scriptType: 'pscore'
+                    scriptLocation: 'inlineScript'
+                    inlineScript: |
+                      az config set extension.use_dynamic_install=yes_without_prompt
+
+                      Install-Module -Name azure.databricks.cicd.tools -Force -Scope CurrentUser
+
+                      Import-Module -Name azure.databricks.cicd.tools
+
+                      Update-Module -Name azure.databricks.cicd.tools
+
+                      # Optionally, list commands from the module for verification
+                      Get-Command -Module azure.databricks.cicd.tools
+
+                      # Try-Catch for better error handling
+                      try {
+                        Import-DatabricksFolder -BearerToken $(databricks-${{ parameters.databricks_token_number }}-token) -Region 'West Europe' -LocalPath ${{parameters.local_folder_path}} -DatabricksPath ${{parameters.release_path}} 
+                      }
+                      catch {
+                        Write-Error "Error occurred: $_"
+                      }

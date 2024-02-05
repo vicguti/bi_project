@@ -1,0 +1,49 @@
+trigger: none
+
+resources:
+  repositories:
+
+  - repository: databricks_notebooks
+    type: git 
+    name: bi_project
+    ref: master
+
+stages:
+# ci tests
+- template: ../task-templates/databricks/stages/ci_databricks.yaml
+
+# dev
+- template: ./template/cd_databricks.yaml
+  parameters:
+    env_name: 'dev'
+    azure_subscription: ''
+    key_vault_name: ''
+    databricks_token_number: ''
+    databricks_url: ''
+    defaultLocation: '$(defaultLocation)'
+    release_path: ''
+    local_folder_path: 'notebooks'
+
+# qa
+- template: ./template/cd_databricks.yaml
+  parameters:
+    env_name: 'qa'
+    azure_subscription: ''
+    key_vault_name: ''
+    databricks_token_number: ''
+    databricks_url: ''
+    defaultLocation: '$(defaultLocation)'
+    release_path: ''
+    local_folder_path: 'notebooks'
+
+# prd
+- template: ./template/cd_databricks.yaml
+  parameters:
+    env_name: 'prd'
+    azure_subscription: ''
+    key_vault_name: ''
+    databricks_token_number: ''
+    databricks_url: ''
+    defaultLocation: '$(defaultLocation)'
+    release_path: ''
+    local_folder_path: 'notebooks'
